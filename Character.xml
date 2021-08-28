@@ -1,10 +1,12 @@
 <CharacterInfo>
-  <Name>Helam</Name>
-  <CharacterClass>Tank</CharacterClass>
-  <AttackPower>22</AttackPower>
-  <Defense>12</Defense>
-  <Intelligence>14</Intelligence>
-  <Dexterity>6</Dexterity>
-  <Constitution>8</Constitution>
-  <Charisma>9</Charisma>
+  <Name>Hero</Name>
+  <CharacterClass>Novice</CharacterClass>
+  <Level>6</Level>
+  <AttackPower>18</AttackPower>
+  <Defense>26</Defense>
+  <HP>44</HP>
+  <Intelligence>13</Intelligence>
+  <Dexterity>13</Dexterity>
+  <Constitution>20</Constitution>
+  <Charisma>24</Charisma>
 </CharacterInfo>

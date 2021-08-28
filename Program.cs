@@ -79,29 +79,39 @@ namespace RPG_Character_Generator
             string entry;
             bool loop = true;
 
-            character.ShowStats();
-
-            Console.WriteLine("\nWhat would you like to do next?");
-            Console.WriteLine("(A) Change characters name.");
-            Console.WriteLine("(B) Level up character");
-            Console.WriteLine("(C) Save Character");
-            Console.WriteLine("(D) Quit");
-            entry = Console.ReadLine().ToLower();
-
-            if (entry == "a")
+            do
             {
-                character.ChangeCharacterName();
                 character.ShowStats();
-            }
 
-            if (entry == "b")
-                character.LevelUp();
+                Console.WriteLine("\nWhat would you like to do next?");
+                Console.WriteLine("(A) Change characters name.");
+                Console.WriteLine("(B) Level up character");
+                Console.WriteLine("(C) Save Character");
+                Console.WriteLine("(D) Quit");
+                entry = Console.ReadLine().ToLower();
 
-            if (entry == "c")
-                ImportExport.SaveCharacter(character);
+                if (entry == "a")
+                {
+                    character.ChangeCharacterName();
+                    Console.WriteLine("\nNice to meet you {0}",character.name);
+                }
+
+                if (entry == "b")
+                    character.LevelUp();
+
+                if (entry == "c")
+                    ImportExport.SaveCharacter(character);
+
+                if (entry == "d")
+                {
+                    Console.WriteLine("Bye!");
+                    loop = false;
+                }
+
+            } while (loop == true);
         }
-
     }
+
     
     class Character
     {       
@@ -110,9 +120,13 @@ namespace RPG_Character_Generator
         
         public string charClass { get; set; }
 
+        public int level { get; set; }
+
         public int attack { get; set; }
         
         public int defense { get; set; }
+
+        public int hp { get; set; }
         
         public int intelligence { get; set; }  
         
@@ -128,8 +142,10 @@ namespace RPG_Character_Generator
         {
             name = "";
             charClass = "Novice";
+            level = 1;
             attack = 0;
             defense = 0;
+            hp = 0;
             intelligence = 0;
             dexterity = 0;
             constitution = 0;
@@ -142,8 +158,10 @@ namespace RPG_Character_Generator
             
             Console.WriteLine("Generating character...");
             name = "Hero";  // Make something that picks from a random list of names.
+            level = 1;
             attack = rand.Next(10,25);
             defense = rand.Next(10, 20);
+            hp = rand.Next(20, 35);
             intelligence = rand.Next(6, 20);
             dexterity = rand.Next(6, 20);
             constitution = rand.Next(6, 20);
@@ -164,6 +182,9 @@ namespace RPG_Character_Generator
 
             Console.WriteLine("Whats your characters attack power?");
             attack = Convert.ToInt32(Console.ReadLine());
+
+            Console.WriteLine("Whats your characters HP?");
+            hp = Convert.ToInt32(Console.ReadLine());
 
             Console.WriteLine("Whats your characters defense?");
             defense = Convert.ToInt32(Console.ReadLine());
@@ -186,9 +207,11 @@ namespace RPG_Character_Generator
             Console.Clear();            
             Console.WriteLine("Your stats are:\n");
             Console.WriteLine($"Your characters name is {name}.");
+            Console.WriteLine($"Your leve i is {level}.");
             Console.WriteLine($"Your characters class is {charClass}.");
             Console.WriteLine($"Your attack is {attack}.");
             Console.WriteLine($"Your defense is {defense}.");
+            Console.WriteLine($"Your HP is {hp}.");
             Console.WriteLine($"Your intelligence is {intelligence}.");
             Console.WriteLine($"Your dexterity is {dexterity}.");
             Console.WriteLine($"Your constitution is {constitution}.");
@@ -197,16 +220,27 @@ namespace RPG_Character_Generator
         }
 
         public void ChangeCharacterName()
-        {
-            string entry = " ";
-            
+        {   
             Console.WriteLine("What is your characters new name?");
             name = Console.ReadLine();
         }
 
         public void LevelUp()
         {
-            Console.WriteLine("This will level up your character eventually.");
+            Random rand = new Random();
+
+            level++;
+            Console.WriteLine($"LEVEL UP! your new level is {level}.");
+            
+            attack += rand.Next(1, 3);
+            defense += rand.Next(1, 3);
+            hp += rand.Next(3, 5);
+            intelligence += rand.Next(1, 2);
+            dexterity += rand.Next(1, 2);
+            constitution += rand.Next(1, 2);
+            charisma += rand.Next(1, 2);
+
+            Console.ReadKey();
         }
 
         /////////////
@@ -241,8 +275,7 @@ namespace RPG_Character_Generator
         }
         
         public static void SaveCharacter(Character character)
-        {
-           
+        {                       
             XmlDocument xmldoc = new XmlDocument();
 
             XmlNode root, node;
@@ -257,12 +290,20 @@ namespace RPG_Character_Generator
             node.InnerText = character.charClass;
             root.AppendChild(node);
 
+            node = xmldoc.CreateElement("Level");
+            node.InnerText = character.level.ToString();
+            root.AppendChild(node);
+
             node = xmldoc.CreateElement("AttackPower");
             node.InnerText = character.attack.ToString();
             root.AppendChild(node);
 
             node = xmldoc.CreateElement("Defense");
             node.InnerText = character.defense.ToString();
+            root.AppendChild(node);
+
+            node = xmldoc.CreateElement("HP");
+            node.InnerText = character.hp.ToString();
             root.AppendChild(node);
 
             node = xmldoc.CreateElement("Intelligence");
