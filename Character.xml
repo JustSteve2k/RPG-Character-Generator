@@ -1,5 +1,10 @@
-<Character>
-  <Name>Sharky</Name>
-  <AttackPower>15</AttackPower>
-  <Defense>6</Defense>
-</Character>
+<CharacterInfo>
+  <Name>Helam</Name>
+  <CharacterClass>Tank</CharacterClass>
+  <AttackPower>22</AttackPower>
+  <Defense>12</Defense>
+  <Intelligence>14</Intelligence>
+  <Dexterity>6</Dexterity>
+  <Constitution>8</Constitution>
+  <Charisma>9</Charisma>
+</CharacterInfo>
