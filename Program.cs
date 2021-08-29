@@ -18,7 +18,7 @@ namespace RPG_Character_Generator
                     mainChar.GenerateCharacter();
                     break;
                 case ('b'):
-                    Console.WriteLine("Load an existing character - TBD");
+                    ImportExport.LoadCharacter(mainChar);                    
                     break;
                 case ('c'):
                     mainChar.ManuallyMakeChar();
@@ -207,7 +207,7 @@ namespace RPG_Character_Generator
             Console.Clear();            
             Console.WriteLine("Your stats are:\n");
             Console.WriteLine($"Your characters name is {name}.");
-            Console.WriteLine($"Your leve i is {level}.");
+            Console.WriteLine($"Your level is {level}.");
             Console.WriteLine($"Your characters class is {charClass}.");
             Console.WriteLine($"Your attack is {attack}.");
             Console.WriteLine($"Your defense is {defense}.");
@@ -245,8 +245,7 @@ namespace RPG_Character_Generator
 
         /////////////
         ////////// Functions to make
-        /////////////
-        // LevelUp - level up 
+        /////////////        
         // LevelUpMax - level up character to lvl 99.
         // Evaluate - give comments based off level of stats.
         // GenerateInv - make  
@@ -327,9 +326,50 @@ namespace RPG_Character_Generator
             Console.ReadKey();                       
         }
 
-        public static void LoadCharacter()
+        public static void LoadCharacter(Character character)
         {
-            Console.WriteLine("This function loads a character...");
+            string entry = "";
+            Console.WriteLine("What character do you want to load?");
+            entry = Console.ReadLine().Trim();
+
+            XmlDocument xmldoc = new XmlDocument();
+            xmldoc.Load(@"Y:\Programming\C#\Learning Projects - Console\RPG Character Generator\RPG Character Generator\" + entry + ".xml");
+
+            foreach (XmlNode xmlnode in xmldoc.DocumentElement.ChildNodes)
+            {                
+                if (xmlnode.Name == "Name")
+                    character.name = xmlnode.InnerText;
+                
+                if (xmlnode.Name == "CharacterClass")
+                    character.charClass = xmlnode.InnerText;
+
+                if (xmlnode.Name == "Level")
+                    character.level = Convert.ToInt32(xmlnode.InnerText);
+
+                if (xmlnode.Name == "AttackPower")
+                    character.attack = Convert.ToInt32(xmlnode.InnerText);
+
+                if (xmlnode.Name == "Defense")
+                    character.defense = Convert.ToInt32(xmlnode.InnerText);
+
+                if (xmlnode.Name == "HP")
+                    character.hp = Convert.ToInt32(xmlnode.InnerText);
+
+                if (xmlnode.Name == "Intelligence")
+                    character.intelligence = Convert.ToInt32(xmlnode.InnerText);
+
+                if (xmlnode.Name == "Dexterity")
+                    character.dexterity = Convert.ToInt32(xmlnode.InnerText);
+
+                if (xmlnode.Name == "Constitution")
+                    character.constitution = Convert.ToInt32(xmlnode.InnerText);
+
+                if (xmlnode.Name == "Charisma")
+                    character.charisma = Convert.ToInt32(xmlnode.InnerText);
+            }
+
+            Console.ReadKey();
+            // Console.WriteLine("This function loads a character...");
         }
 
     }
