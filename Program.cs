@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Xml;
+using System.IO;
+using System.Collections.Generic;
 
 namespace RPG_Character_Generator
 {
@@ -12,7 +14,7 @@ namespace RPG_Character_Generator
             
             choice = Menu.ShowMainMenu();
             
-            switch(choice)
+            switch(choice)  // Clean up somehow.
             {
                 case ('a'):
                     mainChar.GenerateCharacter();
@@ -32,10 +34,8 @@ namespace RPG_Character_Generator
             }
 
             if (choice != 'd')
-            {
-                // New menu asking if they want to A-rename person B-Level up character C. Save.   Show stats automatically.
-                Menu.ShowSecondaryMenu(mainChar);                                                
-            }
+                Menu.ShowSecondaryMenu(mainChar);   // New menu asking if they want to A-rename person B-Level up character C. Save.   Show stats automatically.
+            
 
             Console.ReadKey();
 
@@ -57,7 +57,7 @@ namespace RPG_Character_Generator
             Console.WriteLine("(D)Nvm, go do something else.");
 
             entry = Console.ReadLine().ToLower();  // need to validate choice to be a-d.... loop if not.
-
+            
             switch (entry)  // CLEAN UP THIS PORTION TO JUST SIMPLE RETURN
             {
                 case ("a"):
@@ -77,7 +77,9 @@ namespace RPG_Character_Generator
         public static void ShowSecondaryMenu(Character character)
         {
             string entry;
-            bool loop = true;
+            bool loop = true;            
+
+            Console.Clear();
 
             do
             {
@@ -86,23 +88,25 @@ namespace RPG_Character_Generator
                 Console.WriteLine("\nWhat would you like to do next?");
                 Console.WriteLine("(A) Change characters name.");
                 Console.WriteLine("(B) Level up character");
-                Console.WriteLine("(C) Save Character");
-                Console.WriteLine("(D) Quit");
+                Console.WriteLine("(C) Level up to 99");
+                Console.WriteLine("(D) Save Character");
+                Console.WriteLine("(E) Quit");
                 entry = Console.ReadLine().ToLower();
 
+                
                 if (entry == "a")
-                {
                     character.ChangeCharacterName();
-                    Console.WriteLine("\nNice to meet you {0}",character.name);
-                }
 
-                if (entry == "b")
+                if (entry == "b")                
                     character.LevelUp();
-
+                    
                 if (entry == "c")
-                    ImportExport.SaveCharacter(character);
+                    character.LevelUpMax();
 
                 if (entry == "d")
+                    ImportExport.SaveCharacter(character);
+
+                if (entry == "e")
                 {
                     Console.WriteLine("Bye!");
                     loop = false;
@@ -157,7 +161,7 @@ namespace RPG_Character_Generator
             Random rand = new Random();
             
             Console.WriteLine("Generating character...");
-            name = "Hero";  // Make something that picks from a random list of names.
+            name = GenerateName();             
             level = 1;
             attack = rand.Next(10,25);
             defense = rand.Next(10, 20);
@@ -223,6 +227,9 @@ namespace RPG_Character_Generator
         {   
             Console.WriteLine("What is your characters new name?");
             name = Console.ReadLine();
+            Console.WriteLine("\nNice to meet you {0}!", name);
+
+            Console.ReadKey();
         }
 
         public void LevelUp()
@@ -230,8 +237,9 @@ namespace RPG_Character_Generator
             Random rand = new Random();
 
             level++;
+
             Console.WriteLine($"LEVEL UP! your new level is {level}.");
-            
+
             attack += rand.Next(1, 3);
             defense += rand.Next(1, 3);
             hp += rand.Next(3, 5);
@@ -243,12 +251,34 @@ namespace RPG_Character_Generator
             Console.ReadKey();
         }
 
+        public void LevelUpMax()
+        {            
+
+            for (int x = level; x < 99; x++)
+                LevelUp(); 
+            
+            Console.WriteLine("{0} is leveled up to {1}!", name, level);
+
+            Console.ReadKey();
+        }
+
+        private string GenerateName()
+        {
+            Random rand = new Random();
+            int temp = 0;
+
+            List<string> names = new List<string> { "Riggalo", "Zenith", "Quasar", "Nero", "Samson", "Elian", "Ragnar" ,"Ignis" };
+
+            temp = rand.Next(names.Count);
+
+            return names[temp];
+        }
+
         /////////////
         ////////// Functions to make
-        /////////////        
-        // LevelUpMax - level up character to lvl 99.
+        /////////////                
         // Evaluate - give comments based off level of stats.
-        // GenerateInv - make  
+        // GenerateInv - should be separate class.  
         /////////////
     }
 
@@ -321,19 +351,25 @@ namespace RPG_Character_Generator
             node.InnerText = character.charisma.ToString();
             root.AppendChild(node);
 
-            xmldoc.Save(@"Y:\Programming\C#\Learning Projects - Console\RPG Character Generator\RPG Character Generator\Character.xml");  // Eventually allow the user to name the save file.
+            xmldoc.Save(@"Y:\Programming\C#\Learning Projects - Console\RPG Character Generator\RPG Character Generator\" + character.name + ".xml");  // Eventually allow the user to name the save file.
             Console.WriteLine("Saved!");
             Console.ReadKey();                       
         }
 
-        public static void LoadCharacter(Character character)
+        public static void LoadCharacter(Character character)  // Console.WriteLine("This function loads a character...");
         {
             string entry = "";
-            Console.WriteLine("What character do you want to load?");
-            entry = Console.ReadLine().Trim();
 
-            XmlDocument xmldoc = new XmlDocument();
-            xmldoc.Load(@"Y:\Programming\C#\Learning Projects - Console\RPG Character Generator\RPG Character Generator\" + entry + ".xml");
+
+        NameEntry:
+            try
+            {                
+                Console.WriteLine("What character do you want to load?");
+                entry = Console.ReadLine().Trim();
+
+                XmlDocument xmldoc = new XmlDocument();
+                xmldoc.Load(@"Y:\Programming\C#\Learning Projects - Console\RPG Character Generator\RPG Character Generator\" + entry + ".xml");
+         
 
             foreach (XmlNode xmlnode in xmldoc.DocumentElement.ChildNodes)
             {                
@@ -368,8 +404,16 @@ namespace RPG_Character_Generator
                     character.charisma = Convert.ToInt32(xmlnode.InnerText);
             }
 
-            Console.ReadKey();
-            // Console.WriteLine("This function loads a character...");
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine("I dunno who that is.  Lets try that again.\n");
+                Console.ReadKey();
+                Console.Clear();
+                goto NameEntry;
+            }
+
+            Console.ReadKey();            
         }
 
     }

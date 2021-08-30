@@ -1,12 +1,12 @@
 <CharacterInfo>
-  <Name>Hero</Name>
+  <Name>Tanko</Name>
   <CharacterClass>Novice</CharacterClass>
-  <Level>6</Level>
-  <AttackPower>18</AttackPower>
-  <Defense>26</Defense>
-  <HP>44</HP>
-  <Intelligence>13</Intelligence>
-  <Dexterity>13</Dexterity>
-  <Constitution>20</Constitution>
-  <Charisma>24</Charisma>
+  <Level>99</Level>
+  <AttackPower>181</AttackPower>
+  <Defense>155</Defense>
+  <HP>363</HP>
+  <Intelligence>111</Intelligence>
+  <Dexterity>105</Dexterity>
+  <Constitution>107</Constitution>
+  <Charisma>109</Charisma>
 </CharacterInfo>
