@@ -1,0 +1,12 @@
+<CharacterInfo>
+  <Name>Zenith</Name>
+  <CharacterClass>Novice</CharacterClass>
+  <Level>1</Level>
+  <AttackPower>11</AttackPower>
+  <Defense>13</Defense>
+  <HP>24</HP>
+  <Intelligence>16</Intelligence>
+  <Dexterity>16</Dexterity>
+  <Constitution>13</Constitution>
+  <Charisma>12</Charisma>
+</CharacterInfo>

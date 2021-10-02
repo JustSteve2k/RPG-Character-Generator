@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Xml;
-using System.IO;
 using System.Collections.Generic;
 
 namespace RPG_Character_Generator
@@ -10,428 +8,81 @@ namespace RPG_Character_Generator
         static void Main(string[] args)
         {            
             Character mainChar = new Character();
-            char choice;
-            
-            choice = Menu.ShowMainMenu();
-            
-            switch(choice)  // Clean up somehow.
-            {
-                case ('a'):
-                    mainChar.GenerateCharacter();
-                    break;
-                case ('b'):
-                    ImportExport.LoadCharacter(mainChar);                    
-                    break;
-                case ('c'):
-                    mainChar.ManuallyMakeChar();
-                    break;
-                case ('d'):
-                    Console.WriteLine("\n\nOk then... bye!");
-                    break;
-                default:
-                    Console.WriteLine("wat");
-                    break;
-            }
 
-            if (choice != 'd')
-                Menu.ShowSecondaryMenu(mainChar);   // New menu asking if they want to A-rename person B-Level up character C. Save.   Show stats automatically.
+            Menu.TitleScreen();
             
-
+            Menu.ShowMainMenu(mainChar); // Main menu asking paths. Maybe add branching monster menu.
+            
+            Menu.ShowSecondaryMenu(mainChar);   // New menu asking if they want to do additional things to generated character. Show stats automatically.
+            
             Console.ReadKey();
 
         }
         
     }
-
-    class Menu
-    {
-        public static char ShowMainMenu() // Maybe need to return choice as char 
-        {
-            string entry;
-
-            Console.WriteLine("Welcome to the Character Generator!\n\n");
-            Console.WriteLine("Choose how to proceed:");
-            Console.WriteLine("(A)Generate a new character.");
-            Console.WriteLine("(B)Load an exsisting character.");
-            Console.WriteLine("(C)Manually enter a new character");
-            Console.WriteLine("(D)Nvm, go do something else.");
-
-            entry = Console.ReadLine().ToLower();  // need to validate choice to be a-d.... loop if not.
-            
-            switch (entry)  // CLEAN UP THIS PORTION TO JUST SIMPLE RETURN
-            {
-                case ("a"):
-                    return 'a';
-                case ("b"):
-                    return 'b';
-                case ("c"):
-                    return 'c';
-                case ("d"):
-                    return 'd';
-                default:
-                    return 'a';
-            }
-
-        }
-
-        public static void ShowSecondaryMenu(Character character)
-        {
-            string entry;
-            bool loop = true;            
-
-            Console.Clear();
-
-            do
-            {
-                character.ShowStats();
-
-                Console.WriteLine("\nWhat would you like to do next?");
-                Console.WriteLine("(A) Change characters name.");
-                Console.WriteLine("(B) Level up character");
-                Console.WriteLine("(C) Level up to 99");
-                Console.WriteLine("(D) Save Character");
-                Console.WriteLine("(E) Quit");
-                entry = Console.ReadLine().ToLower();
-
-                
-                if (entry == "a")
-                    character.ChangeCharacterName();
-
-                if (entry == "b")                
-                    character.LevelUp();
-                    
-                if (entry == "c")
-                    character.LevelUpMax();
-
-                if (entry == "d")
-                    ImportExport.SaveCharacter(character);
-
-                if (entry == "e")
-                {
-                    Console.WriteLine("Bye!");
-                    loop = false;
-                }
-
-            } while (loop == true);
-        }
-    }
-
     
-    class Character
-    {       
-        
-        public string name { get; set; }
-        
-        public string charClass { get; set; }
-
-        public int level { get; set; }
-
-        public int attack { get; set; }
-        
-        public int defense { get; set; }
-
-        public int hp { get; set; }
-        
-        public int intelligence { get; set; }  
-        
-        public int dexterity { get; set; } 
-
-        public int constitution { get; set; } 
-
-        public int charisma { get; set; } 
-        
-        // Other stats to make - characterdescription, alignment, hometown, occupation, age, money;
-
-        public Character()  // May be the same as generate character.
-        {
-            name = "";
-            charClass = "Novice";
-            level = 1;
-            attack = 0;
-            defense = 0;
-            hp = 0;
-            intelligence = 0;
-            dexterity = 0;
-            constitution = 0;
-            charisma = 0;
-        }
-                        
-        public void GenerateCharacter()  // Maybe make something that genrates a tank / healer / spellcaster / melee dps depending on input.
-        {
-            Random rand = new Random();
-            
-            Console.WriteLine("Generating character...");
-            name = GenerateName();             
-            level = 1;
-            attack = rand.Next(10,25);
-            defense = rand.Next(10, 20);
-            hp = rand.Next(20, 35);
-            intelligence = rand.Next(6, 20);
-            dexterity = rand.Next(6, 20);
-            constitution = rand.Next(6, 20);
-            charisma = rand.Next(6, 20);
-        }
-
-        public void ManuallyMakeChar()
-        {
-            Console.Clear();
-            Console.WriteLine("Lets make a character...");
-            Console.ReadKey();
-                        
-            Console.WriteLine("\nWhats your characters name?");
-            name = Console.ReadLine();
-
-            Console.WriteLine("Whats your characters class?");
-            charClass = Console.ReadLine();
-
-            Console.WriteLine("Whats your characters attack power?");
-            attack = Convert.ToInt32(Console.ReadLine());
-
-            Console.WriteLine("Whats your characters HP?");
-            hp = Convert.ToInt32(Console.ReadLine());
-
-            Console.WriteLine("Whats your characters defense?");
-            defense = Convert.ToInt32(Console.ReadLine());
-
-            Console.WriteLine("Whats your characters intelligence");
-            intelligence = Convert.ToInt32(Console.ReadLine());
-
-            Console.WriteLine("Whats your characters dexterity");
-            dexterity = Convert.ToInt32(Console.ReadLine());
-
-            Console.WriteLine("Whats your characters constitution");
-            constitution = Convert.ToInt32(Console.ReadLine());
-
-            Console.WriteLine("Whats your characters charisma");
-            charisma = Convert.ToInt32(Console.ReadLine());
-        }
-
-        public void ShowStats()
-        {
-            Console.Clear();            
-            Console.WriteLine("Your stats are:\n");
-            Console.WriteLine($"Your characters name is {name}.");
-            Console.WriteLine($"Your level is {level}.");
-            Console.WriteLine($"Your characters class is {charClass}.");
-            Console.WriteLine($"Your attack is {attack}.");
-            Console.WriteLine($"Your defense is {defense}.");
-            Console.WriteLine($"Your HP is {hp}.");
-            Console.WriteLine($"Your intelligence is {intelligence}.");
-            Console.WriteLine($"Your dexterity is {dexterity}.");
-            Console.WriteLine($"Your constitution is {constitution}.");
-            Console.WriteLine($"Your charisma is {charisma}.");
-            Console.ReadKey();
-        }
-
-        public void ChangeCharacterName()
-        {   
-            Console.WriteLine("What is your characters new name?");
-            name = Console.ReadLine();
-            Console.WriteLine("\nNice to meet you {0}!", name);
-
-            Console.ReadKey();
-        }
-
-        public void LevelUp()
-        {
-            Random rand = new Random();
-
-            level++;
-
-            Console.WriteLine($"LEVEL UP! your new level is {level}.");
-
-            attack += rand.Next(1, 3);
-            defense += rand.Next(1, 3);
-            hp += rand.Next(3, 5);
-            intelligence += rand.Next(1, 2);
-            dexterity += rand.Next(1, 2);
-            constitution += rand.Next(1, 2);
-            charisma += rand.Next(1, 2);
-
-            Console.ReadKey();
-        }
-
-        public void LevelUpMax()
-        {            
-
-            for (int x = level; x < 99; x++)
-                LevelUp(); 
-            
-            Console.WriteLine("{0} is leveled up to {1}!", name, level);
-
-            Console.ReadKey();
-        }
-
-        private string GenerateName()
-        {
-            Random rand = new Random();
-            int temp = 0;
-
-            List<string> names = new List<string> { "Riggalo", "Zenith", "Quasar", "Nero", "Samson", "Elian", "Ragnar" ,"Ignis" };
-
-            temp = rand.Next(names.Count);
-
-            return names[temp];
-        }
-
-        /////////////
-        ////////// Functions to make
-        /////////////                
-        // Evaluate - give comments based off level of stats.
-        // GenerateInv - should be separate class.  
-        /////////////
-    }
-
-
-    class ImportExport
-    {
-        public static void ShowMenu(Character character)
-        {
-            Console.Clear();
-            string entry = "";
-            Console.WriteLine("Would you like to save your work?");
-            entry = Console.ReadLine().ToLower().Trim();
-
-            if (entry == "yes" || entry == "y")
-            {
-                SaveCharacter(character);
-            }
-            else
-            {
-                Console.WriteLine("Not saved!");
-                Console.ReadKey();
-            }
-        }
-        
-        public static void SaveCharacter(Character character)
-        {                       
-            XmlDocument xmldoc = new XmlDocument();
-
-            XmlNode root, node;
-            root = xmldoc.CreateElement("CharacterInfo");
-            xmldoc.AppendChild(root);
-
-            node = xmldoc.CreateElement("Name");
-            node.InnerText = character.name;
-            root.AppendChild(node);
-
-            node = xmldoc.CreateElement("CharacterClass");
-            node.InnerText = character.charClass;
-            root.AppendChild(node);
-
-            node = xmldoc.CreateElement("Level");
-            node.InnerText = character.level.ToString();
-            root.AppendChild(node);
-
-            node = xmldoc.CreateElement("AttackPower");
-            node.InnerText = character.attack.ToString();
-            root.AppendChild(node);
-
-            node = xmldoc.CreateElement("Defense");
-            node.InnerText = character.defense.ToString();
-            root.AppendChild(node);
-
-            node = xmldoc.CreateElement("HP");
-            node.InnerText = character.hp.ToString();
-            root.AppendChild(node);
-
-            node = xmldoc.CreateElement("Intelligence");
-            node.InnerText = character.intelligence.ToString();
-            root.AppendChild(node);
-
-            node = xmldoc.CreateElement("Dexterity");
-            node.InnerText = character.dexterity.ToString();
-            root.AppendChild(node);
-
-            node = xmldoc.CreateElement("Constitution");
-            node.InnerText = character.constitution.ToString();
-            root.AppendChild(node);
-
-            node = xmldoc.CreateElement("Charisma");
-            node.InnerText = character.charisma.ToString();
-            root.AppendChild(node);
-
-            xmldoc.Save(@"Y:\Programming\C#\Learning Projects - Console\RPG Character Generator\RPG Character Generator\" + character.name + ".xml");  // Eventually allow the user to name the save file.
-            Console.WriteLine("Saved!");
-            Console.ReadKey();                       
-        }
-
-        public static void LoadCharacter(Character character)  // Console.WriteLine("This function loads a character...");
-        {
-            string entry = "";
-
-
-        NameEntry:
-            try
-            {                
-                Console.WriteLine("What character do you want to load?");
-                entry = Console.ReadLine().Trim();
-
-                XmlDocument xmldoc = new XmlDocument();
-                xmldoc.Load(@"Y:\Programming\C#\Learning Projects - Console\RPG Character Generator\RPG Character Generator\" + entry + ".xml");
-         
-
-            foreach (XmlNode xmlnode in xmldoc.DocumentElement.ChildNodes)
-            {                
-                if (xmlnode.Name == "Name")
-                    character.name = xmlnode.InnerText;
-                
-                if (xmlnode.Name == "CharacterClass")
-                    character.charClass = xmlnode.InnerText;
-
-                if (xmlnode.Name == "Level")
-                    character.level = Convert.ToInt32(xmlnode.InnerText);
-
-                if (xmlnode.Name == "AttackPower")
-                    character.attack = Convert.ToInt32(xmlnode.InnerText);
-
-                if (xmlnode.Name == "Defense")
-                    character.defense = Convert.ToInt32(xmlnode.InnerText);
-
-                if (xmlnode.Name == "HP")
-                    character.hp = Convert.ToInt32(xmlnode.InnerText);
-
-                if (xmlnode.Name == "Intelligence")
-                    character.intelligence = Convert.ToInt32(xmlnode.InnerText);
-
-                if (xmlnode.Name == "Dexterity")
-                    character.dexterity = Convert.ToInt32(xmlnode.InnerText);
-
-                if (xmlnode.Name == "Constitution")
-                    character.constitution = Convert.ToInt32(xmlnode.InnerText);
-
-                if (xmlnode.Name == "Charisma")
-                    character.charisma = Convert.ToInt32(xmlnode.InnerText);
-            }
-
-            }
-            catch (FileNotFoundException)
-            {
-                Console.WriteLine("I dunno who that is.  Lets try that again.\n");
-                Console.ReadKey();
-                Console.Clear();
-                goto NameEntry;
-            }
-
-            Console.ReadKey();            
-        }
-
-    }
 }
 
 #region Future Plans
 
 // LATER
 
-// Load a file for editing.
+// Load a file for editing. - DONE
 
-// Open a new file for editing or generate a character
+// Open a new file for editing or generate a character - DONE 
 
-// Generate stats based off role chosen. 
+// Title Screen - DONE
+
+// Generate stats based off role chosen.   DONE, needs refining though.
 
 // Generate monsters.. 
+
+// Pick from a list of premade monsters?
+
+// Branching classes?
+
+// Evaluate - give comments based off level of stats. Maybe replaced by glass
+
+// Simple combat
+
+// Generate inventory - Potions, Gil, 
+
+// Loot from monster battles.
+
+// Generate character traits
+
+// Tower progession - Fight monsters of various levels set with premade monsters.
+
+// Save character progress through tower and load game.
+
+// Generate backstory for character.
+
+// Provide character with random abilities
+
+// Provide Traits  
 
 // Generate towns
 
 // Generate special artifact items.
+
 #endregion
+
+#region Bugs
+
+// Main menu continues despite exit.
+
+#endregion
+
+
+#region Things to think about.
+
+// Classes - Determine stat progression
+
+#endregion
+
+
+
+
+
+
+/////////////
